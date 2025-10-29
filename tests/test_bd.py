@@ -4,7 +4,6 @@ from unittest import mock
 from contextlib import contextmanager
 
 import argparse
-from typing import Callable
 
 from bd import DeleteJobsCommand
 from tests.helpers import DictToObject
