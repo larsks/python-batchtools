@@ -24,7 +24,7 @@ analyzeUnannotatedFunctions = false
 
 
 [tool.pytest.ini_options]
-addopts = "--cov=. --cov-report=html -v"
+addopts = "--cov=. --cov-report=html"
 
 [tool.coverage.report]
 omit = ["tests/*"]

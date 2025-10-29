@@ -8,6 +8,7 @@ def is_logged_in() -> bool:
     except oc.OpenShiftPythonException:
         return False
 
+
 def pretty_print(pod: oc.APIObject) -> str:
     formatted_logs: str = ""
     try:
