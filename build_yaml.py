@@ -97,4 +97,8 @@ rsync -q --archive --no-owner --no-group \
             },
         },
     }
+    with open("job.yaml", "w") as fd:
+        import json
+
+        json.dump(body, fd, indent=2)
     return body
