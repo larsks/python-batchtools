@@ -1,4 +1,3 @@
-import typing_extensions
 from typing_extensions import override
 from typing import cast
 
