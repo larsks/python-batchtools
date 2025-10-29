@@ -200,7 +200,6 @@ class CreateJobCommand(Command):
                 devcontainer=dev_container_name,
                 context_dir=context_directory,
                 jobs_dir=jobs_directory,
-                job_workspace=output_directory,
                 getlist_path=getlist,
             )
 
