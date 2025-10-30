@@ -42,6 +42,8 @@ def test_create_job_nowait(
     args = parser.parse_args(["br"])
     args.wait = False
     args.job_id = 123
+    args.image = "test-image"
+    args.gpu = "v100"
     args.command = ["true"]
 
     mock_getcwd.return_value = tempdir
@@ -86,7 +88,7 @@ def test_create_job_nowait(
                                 "-c",
                                 f"testcommand {' '.join(args.command).strip()}",
                             ],
-                            "image": "image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/csw-run-f25:latest",
+                            "image": "test-image",
                             "resources": {
                                 "requests": {"nvidia.com/gpu": "1"},
                                 "limits": {"nvidia.com/gpu": "1"},
