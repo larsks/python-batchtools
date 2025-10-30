@@ -19,8 +19,14 @@ from file_setup import prepare_context
 
 
 class CreateJobCommandArgs(argparse.Namespace):
-    gpu: str = "v100"
-    image: str = "image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/csw-run-f25:latest"
+    gpu: str = os.getenv(
+        "BATCHTOOLS_GPU",
+        "v100",
+    )
+    image: str = os.getenv(
+        "BATCHTOOLS_IMAGE",
+        "image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/csw-run-f25:latest",
+    )
     context: bool = True
     name: str = "job"
     job_id: int = os.getpid()
