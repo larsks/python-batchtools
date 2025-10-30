@@ -155,6 +155,9 @@ class CreateJobCommand(Command):
             "none": "dummy-localqueue",
         }
 
+        if not args.command:
+            sys.exit("ERROR: you must provide a command")
+
         if args.gpu not in DEFAULT_QUEUES:
             sys.exit(f"ERROR: unsupported GPU {args.gpu} : no queue found")
         queue_name = DEFAULT_QUEUES[args.gpu]
