@@ -1,5 +1,5 @@
+# pyright: reportUninitializedInstanceVariable=false
 from typing import cast
-import typing_extensions
 from typing_extensions import override
 
 import argparse
@@ -7,6 +7,7 @@ import os
 import socket
 import sys
 import time
+import uuid
 
 import openshift_client as oc
 
@@ -19,11 +20,19 @@ from file_setup import prepare_context
 
 
 class CreateJobCommandArgs(argparse.Namespace):
+    """This class serves two purposes:
+
+    1. It provides type hints that permit a properly configured IDE (or type
+       checker) to perform type checking on command line option values.
+
+    2. It provides default values for command line options.
+    """
+
     gpu: str = "v100"
     image: str = "image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/csw-run-f25:latest"
     context: bool = True
     name: str = "job"
-    job_id: int = os.getpid()
+    job_id: str = uuid.uuid5(uuid.NAMESPACE_OID, f"{os.getpid()}-{time.time()}").hex
     job_delete: bool = True
     wait: bool = True
     timeout: int = 60 * 15 * 4
@@ -31,7 +40,7 @@ class CreateJobCommandArgs(argparse.Namespace):
     gpu_numreq: int = 1
     gpu_numlim: int = 1
     verbose: int = 0
-    command: list[str] = []
+    command: list[str]
 
 
 class CreateJobCommand(Command):
@@ -76,65 +85,64 @@ class CreateJobCommand(Command):
         p.add_argument(
             "--gpu",
             default=CreateJobCommandArgs.gpu,
-            help=f"Select GPU type (default {CreateJobCommandArgs.gpu})",
+            help="Select GPU type",
         )
         p.add_argument(
             "--image",
             default=CreateJobCommandArgs.image,
-            help=f"Specify container image for job (default {CreateJobCommandArgs.image})",
+            help="Specify container image for job",
         )
         p.add_argument(
             "--context",
             action=argparse.BooleanOptionalAction,
             default=CreateJobCommandArgs.context,
-            help=f"Copy working directory (default {CreateJobCommandArgs.context})",
+            help="Copy working directory",
         )
         p.add_argument(
             "--name",
             default=CreateJobCommandArgs.name,
-            help=f"Base job name (default {CreateJobCommandArgs.name})",
+            help="Base job name",
         )
         p.add_argument(
             "--job-id",
             default=CreateJobCommandArgs.job_id,
-            type=int,
-            help="Job ID suffix (default current pid)",
+            help="Job ID suffix",
         )
         p.add_argument(
             "--job-delete",
             action=argparse.BooleanOptionalAction,
             default=CreateJobCommandArgs.job_delete,
-            help=f"Delete job on completion (default {CreateJobCommandArgs.job_delete})",
+            help="Delete job on completion",
         )
         p.add_argument(
             "--wait",
             action=argparse.BooleanOptionalAction,
             default=CreateJobCommandArgs.wait,
-            help=f"Wait for job completion (default {CreateJobCommandArgs.wait})",
+            help="Wait for job completion",
         )
         p.add_argument(
             "--timeout",
             default=CreateJobCommandArgs.timeout,
             type=int,
-            help=f"Wait timeout in seconds (default {CreateJobCommandArgs.timeout})",
+            help="Wait timeout in seconds",
         )
         p.add_argument(
             "--max-sec",
             default=CreateJobCommandArgs.max_sec,
             type=int,
-            help=f"Maximum execution time in seconds (default {CreateJobCommandArgs.max_sec})",
+            help="Maximum execution time in seconds",
         )
         p.add_argument(
             "--gpu-numreq",
             default=CreateJobCommandArgs.gpu_numreq,
             type=int,
-            help=f"Number of GPUs requested (default {CreateJobCommandArgs.gpu_numreq})",
+            help="Number of GPUs requested",
         )
         p.add_argument(
             "--gpu-numlim",
             default=CreateJobCommandArgs.gpu_numlim,
             type=int,
-            help=f"Number of GPUs limited (default {CreateJobCommandArgs.gpu_numlim})",
+            help="Number of GPUs limited",
         )
         p.add_argument(
             "command",

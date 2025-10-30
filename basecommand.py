@@ -3,6 +3,7 @@
 import abc
 from typing import Protocol
 from typing import Any
+from typing_extensions import override
 
 import argparse
 
@@ -22,6 +23,19 @@ class SubParserFactory(Protocol):
     ) -> argparse.ArgumentParser: ...
 
 
+class ArgumentDefaultsHelpFormatter(argparse.ArgumentDefaultsHelpFormatter):
+    """Provide the behavior of both argparse.ArgumentDefaultsHelpFormatter
+    and argparse.RawDescriptionHelpFormatter. This means that argparse will
+    care of documenting default values for us, and it won't reformat our
+    carefully crafted help text."""
+
+    @override
+    def _fill_text(
+        self, text: str, width: int | None = None, indent: str | None = None
+    ):
+        return "".join(indent + line for line in text.splitlines(keepends=True))
+
+
 class Command(abc.ABC):
     """
     Base class for all command implementations.
@@ -37,7 +51,7 @@ class Command(abc.ABC):
             cls.name,
             help=cls.help,
             description=cls.__doc__,
-            formatter_class=argparse.RawDescriptionHelpFormatter,
+            formatter_class=ArgumentDefaultsHelpFormatter,
         )
 
         return p
