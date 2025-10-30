@@ -1,6 +1,29 @@
 # pyright: reportExplicitAny=false
 from typing import Any
 
+rsync_script = """
+set -e
+export RSYNC_RSH='oc rsh -c {devcontainer}'
+
+mkdir -p {job_name}
+
+rsync -q --archive --no-owner --no-group --omit-dir-times \
+    --numeric-ids {devpod_name}:{getlist_path} {job_name}/getlist
+rsync -q -r --archive --no-owner --no-group \
+    --omit-dir-times --numeric-ids --files-from={job_name}/getlist \
+    {devpod_name}:{context_dir}/ {job_name}/
+find {job_name} -mindepth 1 -maxdepth 1 > {job_name}/gotlist
+
+(
+  cd {job_name} && {cmdline} |& tee {job_name}.log
+)
+
+rsync -q --archive --no-owner --no-group \
+    --omit-dir-times --no-relative --numeric-ids  \
+    --exclude-from={job_name}/gotlist \
+    {job_name} {devpod_name}:{jobs_dir}
+"""
+
 
 def build_job_body(
     job_name: str,
@@ -39,30 +62,7 @@ def build_job_body(
         command = [
             "/bin/bash",
             "-c",
-            (
-                f"""
-set -e
-export RSYNC_RSH='oc rsh -c {devcontainer}'
-
-mkdir -p {job_name}
-
-rsync -q --archive --no-owner --no-group --omit-dir-times \
-    --numeric-ids {devpod_name}:{getlist_path} {job_name}/getlist
-rsync -q -r --archive --no-owner --no-group \
-    --omit-dir-times --numeric-ids --files-from={job_name}/getlist \
-    {devpod_name}:{context_dir}/ {job_name}/
-find {job_name} -mindepth 1 -maxdepth 1 > {job_name}/gotlist
-
-(
-  cd {job_name} && {cmdline} |& tee {job_name}.log
-)
-
-rsync -q --archive --no-owner --no-group \
-    --omit-dir-times --no-relative --numeric-ids  \
-    --exclude-from={job_name}/gotlist \
-    {job_name} {devpod_name}:{jobs_dir}
-"""
-            ),
+            rsync_script.format_map(locals()),
         ]
     else:
         command = ["/bin/bash", "-c", cmdline]

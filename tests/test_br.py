@@ -4,6 +4,7 @@ from unittest import mock
 import tempfile
 import argparse
 
+import build_yaml
 from br import CreateJobCommand
 from tests.helpers import DictToObject
 
@@ -80,12 +81,12 @@ def test_create_job_nowait(
                     "containers": [
                         {
                             "name": "job-v100-123-container",
-                            "image": "image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/csw-run-f25:latest",
                             "command": [
                                 "/bin/bash",
                                 "-c",
-                                f"\nset -e\nexport RSYNC_RSH='oc rsh -c container1'\n\nmkdir -p job-v100-123\n\nrsync -q --archive --no-owner --no-group --omit-dir-times     --numeric-ids testhost:{tempdir}/jobs/job-v100-123/getlist job-v100-123/getlist\nrsync -q -r --archive --no-owner --no-group     --omit-dir-times --numeric-ids --files-from=job-v100-123/getlist     testhost:{tempdir}/ job-v100-123/\nfind job-v100-123 -mindepth 1 -maxdepth 1 > job-v100-123/gotlist\n\n(\n  cd job-v100-123 &&  |& tee job-v100-123.log\n)\n\nrsync -q --archive --no-owner --no-group     --omit-dir-times --no-relative --numeric-ids      --exclude-from=job-v100-123/gotlist     job-v100-123 testhost:{tempdir}/jobs\n",
-                        ],
+                                f"testcommand {' '.join(args.command).strip()}",
+                            ],
+                            "image": "image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/csw-run-f25:latest",
                             "resources": {
                                 "requests": {"nvidia.com/gpu": "1"},
                                 "limits": {"nvidia.com/gpu": "1"},
@@ -97,6 +98,7 @@ def test_create_job_nowait(
         },
     }
 
+    build_yaml.rsync_script = "testcommand {cmdline}"
     CreateJobCommand.run(args)
 
     assert mock_create.call_args.args[0] == expected
