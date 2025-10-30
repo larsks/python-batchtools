@@ -16,6 +16,7 @@ def tempdir():
 
 def test_invalid_gpu(args: argparse.Namespace):
     args.gpu = "invalid"
+    args.command = ["true"]
     with pytest.raises(SystemExit) as err:
         CreateJobCommand.run(args)
 
@@ -40,6 +41,7 @@ def test_create_job_nowait(
     args = parser.parse_args(["br"])
     args.wait = False
     args.job_id = 123
+    args.command = ["true"]
 
     mock_getcwd.return_value = tempdir
     mock_gethostname.return_value = "testhost"
