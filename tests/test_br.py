@@ -24,6 +24,25 @@ def test_invalid_gpu(args: argparse.Namespace):
     assert "ERROR: unsupported GPU invalid" in err.value.code
 
 
+@pytest.mark.parametrize(
+    "gpu, resources",
+    [
+        (
+            "v100",
+            {
+                "requests": {"nvidia.com/gpu": "1"},
+                "limits": {"nvidia.com/gpu": "1"},
+            },
+        ),
+        (
+            "none",
+            {
+                "requests": {"cpu": "1", "memory": "1Gi"},
+                "limits": {"cpu": "1", "memory": "1Gi"},
+            },
+        ),
+    ],
+)
 @mock.patch("openshift_client.create", name="create")
 @mock.patch("openshift_client.selector", name="selector")
 @mock.patch("socket.gethostname", name="gethostname")
@@ -33,6 +52,8 @@ def test_create_job_nowait(
     mock_gethostname,
     mock_selector,
     mock_create,
+    gpu,
+    resources,
     args: argparse.Namespace,
     tempdir,
     parser,
@@ -41,10 +62,12 @@ def test_create_job_nowait(
     CreateJobCommand.build_parser(subparsers)
     args = parser.parse_args(["br"])
     args.wait = False
-    args.job_id = 123
+    args.job_id = "test"
     args.image = "test-image"
-    args.gpu = "v100"
+    args.gpu = gpu
     args.command = ["true"]
+
+    queue_name = "dummy-localqueue" if gpu == "none" else f"{gpu}-localqueue"
 
     mock_getcwd.return_value = tempdir
     mock_gethostname.return_value = "testhost"
@@ -66,9 +89,9 @@ def test_create_job_nowait(
         "apiVersion": "batch/v1",
         "kind": "Job",
         "metadata": {
-            "name": "job-v100-123",
+            "name": f"job-{gpu}-test",
             "labels": {
-                "kueue.x-k8s.io/queue-name": "v100-localqueue",
+                "kueue.x-k8s.io/queue-name": queue_name,
                 "test_name": "kueue_test",
             },
         },
@@ -82,17 +105,14 @@ def test_create_job_nowait(
                     "restartPolicy": "Never",
                     "containers": [
                         {
-                            "name": "job-v100-123-container",
                             "command": [
                                 "/bin/bash",
                                 "-c",
                                 f"testcommand {' '.join(args.command).strip()}",
                             ],
+                            "name": f"job-{gpu}-test-container",
                             "image": "test-image",
-                            "resources": {
-                                "requests": {"nvidia.com/gpu": "1"},
-                                "limits": {"nvidia.com/gpu": "1"},
-                            },
+                            "resources": resources,
                         }
                     ],
                 }
