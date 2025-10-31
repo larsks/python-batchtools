@@ -1,5 +1,5 @@
-# pyright: reportExplicitAny=false
-from typing import Any
+# pyright: reportUnusedParameter=false
+from kubernetes_typed.client import V1JobDict, V1ResourceRequirementsDict
 
 rsync_script = """
 set -e
@@ -41,10 +41,12 @@ def build_job_body(
     context_dir: str,
     jobs_dir: str,
     getlist_path: str,
-) -> dict[str, Any]:
+) -> V1JobDict:
     """
     Build a batch/v1 Job as a dict to pass to oc.create()
     """
+
+    resources: V1ResourceRequirementsDict
     if gpu == "none":
         resources = {
             "requests": {"cpu": "1", "memory": "1Gi"},
@@ -67,7 +69,7 @@ def build_job_body(
     else:
         command = ["/bin/bash", "-c", cmdline]
 
-    body = {
+    body: V1JobDict = {
         "apiVersion": "batch/v1",
         "kind": "Job",
         "metadata": {
