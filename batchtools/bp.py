@@ -6,8 +6,8 @@ import sys
 
 import openshift_client as oc
 
-from basecommand import Command
-from basecommand import SubParserFactory
+from .basecommand import Command
+from .basecommand import SubParserFactory
 
 
 class PrintJobsCommandArgs(argparse.Namespace):

@@ -6,8 +6,8 @@ import sys
 import argparse
 import openshift_client as oc
 
-from basecommand import Command
-from basecommand import SubParserFactory
+from .basecommand import Command
+from .basecommand import SubParserFactory
 
 
 class ListPodsCommandArgs(argparse.Namespace):

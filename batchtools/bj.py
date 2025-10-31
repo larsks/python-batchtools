@@ -4,7 +4,7 @@ import argparse
 import sys
 import openshift_client as oc
 
-from basecommand import Command
+from .basecommand import Command
 
 
 class ListJobsCommand(Command):

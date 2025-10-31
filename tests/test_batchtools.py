@@ -1,5 +1,5 @@
 import pytest
-from batchtools import BatchTools
+from batchtools.batchtools import BatchTools
 
 
 def test_no_command():

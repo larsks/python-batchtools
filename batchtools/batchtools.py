@@ -1,16 +1,16 @@
 import argparse
 import sys
 
-from basecommand import Command
-from basecommand import SubParserFactory
-from bj import ListJobsCommand
-from bd import DeleteJobsCommand
-from bl import LogsCommand
-from bp import PrintJobsCommand
-from bq import GpuQueuesCommand
-from br import CreateJobCommand
-from bps import ListPodsCommand
-from helpers import is_logged_in
+from .basecommand import Command
+from .basecommand import SubParserFactory
+from .bj import ListJobsCommand
+from .bd import DeleteJobsCommand
+from .bl import LogsCommand
+from .bp import PrintJobsCommand
+from .bq import GpuQueuesCommand
+from .br import CreateJobCommand
+from .bps import ListPodsCommand
+from .helpers import is_logged_in
 
 
 class BatchTools:

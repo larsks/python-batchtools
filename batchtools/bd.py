@@ -6,9 +6,9 @@ import sys
 
 import openshift_client as oc
 
-from basecommand import Command
-from basecommand import SubParserFactory
-from helpers import oc_delete
+from .basecommand import Command
+from .basecommand import SubParserFactory
+from .helpers import oc_delete
 
 
 class DeleteJobsCommandArgs(argparse.Namespace):

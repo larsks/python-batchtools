@@ -5,7 +5,7 @@ import sys
 
 import openshift_client as oc
 
-from basecommand import Command
+from .basecommand import Command
 
 
 class GpuQueuesCommand(Command):

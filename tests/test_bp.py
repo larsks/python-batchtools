@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from typing import Any
 import argparse
 
-from bp import PrintJobsCommand
+from batchtools.bp import PrintJobsCommand
 from tests.helpers import DictToObject
 
 

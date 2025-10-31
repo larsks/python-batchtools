@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "python-batchtools"
 version = "0.1.0"
@@ -5,10 +9,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "kubernetes-typed>=18.20.2",
-    "openshift-client>=2.0.5",
-    "typing-extensions>=4.15.0",
+  "kubernetes-typed>=18.20.2",
+  "openshift-client>=2.0.5",
+  "typing-extensions>=4.15.0",
 ]
+
+[project.scripts]
+batchtools = "batchtools.batchtools:main"
 
 [dependency-groups]
 dev = ["pytest>=8.4.2", "pytest-cov>=7.0.0", "ty>=0.0.1a24"]
@@ -32,3 +39,6 @@ addopts = "--cov=. --cov-report=html"
 
 [tool.coverage.report]
 omit = ["tests/*"]
+
+[tool.setuptools]
+packages = ["batchtools"]

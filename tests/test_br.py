@@ -4,8 +4,8 @@ from unittest import mock
 import tempfile
 import argparse
 
-import build_yaml
-from br import CreateJobCommand
+import batchtools.build_yaml
+from batchtools.br import CreateJobCommand
 from tests.helpers import DictToObject
 
 
@@ -120,7 +120,7 @@ def test_create_job_nowait(
         },
     }
 
-    build_yaml.rsync_script = "testcommand {cmdline}"
+    batchtools.build_yaml.rsync_script = "testcommand {cmdline}"
     CreateJobCommand.run(args)
 
     assert mock_create.call_args.args[0] == expected

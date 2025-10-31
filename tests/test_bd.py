@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 import argparse
 
-from bd import DeleteJobsCommand
+from batchtools.bd import DeleteJobsCommand
 from tests.helpers import DictToObject
 
 

@@ -5,9 +5,9 @@ import sys
 import argparse
 import openshift_client as oc
 
-from basecommand import Command
-from basecommand import SubParserFactory
-from helpers import pretty_print
+from .basecommand import Command
+from .basecommand import SubParserFactory
+from .helpers import pretty_print
 
 
 class LogsCommandArgs(argparse.Namespace):

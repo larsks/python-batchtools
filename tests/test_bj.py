@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 import argparse
 
-from bj import ListJobsCommand
+from batchtools.bj import ListJobsCommand
 from tests.helpers import DictToObject
 
 

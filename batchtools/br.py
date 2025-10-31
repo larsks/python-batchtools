@@ -11,12 +11,12 @@ import uuid
 
 import openshift_client as oc
 
-from basecommand import Command
-from basecommand import SubParserFactory
-from build_yaml import build_job_body
-from helpers import pretty_print
-from helpers import oc_delete
-from file_setup import prepare_context
+from .basecommand import Command
+from .basecommand import SubParserFactory
+from .build_yaml import build_job_body
+from .helpers import pretty_print
+from .helpers import oc_delete
+from .file_setup import prepare_context
 
 
 class CreateJobCommandArgs(argparse.Namespace):

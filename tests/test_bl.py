@@ -6,7 +6,7 @@ import argparse
 from typing import Any
 from typing import Callable
 
-from bl import LogsCommand
+from batchtools.bl import LogsCommand
 from tests.helpers import DictToObject
 
 
